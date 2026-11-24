@@ -1,0 +1,211 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node
+{
+    int data;
+    struct node *left;
+    struct node *right;
+};
+
+// Function declarations
+struct node *insertnode(struct node *, int);
+void preorderTraversal(struct node *);
+void inorderTraversal(struct node *);
+void postorderTraversal(struct node *);
+void levelorderTraversal(struct node *);
+int totalLeafNodes(struct node *);
+int totalNonLeafNodes(struct node *);
+
+int main()
+{
+    int option, val;
+    struct node *root = NULL;
+
+    while (1)
+    {
+        printf("\n\n----- EMPLOYEE BST OPERATIONS -----");
+        printf("\n1. Insert Employee ID");
+        printf("\n2. Preorder Traversal");
+        printf("\n3. Inorder Traversal");
+        printf("\n4. Postorder Traversal");
+        printf("\n5. Level-order Traversal");
+        printf("\n6. Count Leaf Nodes");
+        printf("\n7. Count Non-Leaf Nodes");
+        printf("\n8. Exit");
+
+        printf("\n\nEnter your option: ");
+        scanf("%d", &option);
+
+        switch (option)
+        {
+            case 1:
+                printf("\nEnter Employee ID: ");
+                scanf("%d", &val);
+                root = insertnode(root, val);
+                break;
+
+            case 2:
+                printf("\nPre-order Traversal: ");
+                preorderTraversal(root);
+                break;
+
+            case 3:
+                printf("\nIn-order Traversal: ");
+                inorderTraversal(root);
+                break;
+
+            case 4:
+                printf("\nPost-order Traversal: ");
+                postorderTraversal(root);
+                break;
+
+            case 5:
+                printf("\nLevel-order Traversal: ");
+                levelorderTraversal(root);
+                break;
+
+            case 6:
+                printf("\nTotal Leaf Nodes = %d",
+                       totalLeafNodes(root));
+                break;
+
+            case 7:
+                printf("\nTotal Non-Leaf Nodes = %d",
+                       totalNonLeafNodes(root));
+                break;
+
+            case 8:
+                exit(0);
+
+            default:
+                printf("\nInvalid Option!");
+        }
+    }
+
+    return 0;
+}
+
+// Function to insert a node into BST
+struct node *insertnode(struct node *root, int val)
+{
+    struct node *new_node, *ptr, *temp;
+
+    new_node = (struct node *)malloc(sizeof(struct node));
+
+    new_node->data = val;
+    new_node->left = NULL;
+    new_node->right = NULL;
+
+    if (root == NULL)
+    {
+        root = new_node;
+    }
+    else
+    {
+        ptr = root;
+
+        while (ptr != NULL)
+        {
+            temp = ptr;
+
+            if (val < ptr->data)
+                ptr = ptr->left;
+            else
+                ptr = ptr->right;
+        }
+
+        if (val < temp->data)
+            temp->left = new_node;
+        else
+            temp->right = new_node;
+    }
+
+    return root;
+}
+
+// Preorder Traversal
+void preorderTraversal(struct node *root)
+{
+    if (root != NULL)
+    {
+        printf("%d\t", root->data);
+        preorderTraversal(root->left);
+        preorderTraversal(root->right);
+    }
+}
+
+// Inorder Traversal
+void inorderTraversal(struct node *root)
+{
+    if (root != NULL)
+    {
+        inorderTraversal(root->left);
+        printf("%d\t", root->data);
+        inorderTraversal(root->right);
+    }
+}
+
+// Postorder Traversal
+void postorderTraversal(struct node *root)
+{
+    if (root != NULL)
+    {
+        postorderTraversal(root->left);
+        postorderTraversal(root->right);
+        printf("%d\t", root->data);
+    }
+}
+
+// Level-order Traversal
+void levelorderTraversal(struct node *root)
+{
+    struct node *queue[100];
+    int front = 0, rear = 0;
+
+    if (root == NULL)
+        return;
+
+    queue[rear++] = root;
+
+    while (front < rear)
+    {
+        struct node *temp = queue[front++];
+
+        printf("%d\t", temp->data);
+
+        if (temp->left != NULL)
+            queue[rear++] = temp->left;
+
+        if (temp->right != NULL)
+            queue[rear++] = temp->right;
+    }
+}
+
+// Count Leaf Nodes
+int totalLeafNodes(struct node *root)
+{
+    if (root == NULL)
+        return 0;
+
+    else if (root->left == NULL && root->right == NULL)
+        return 1;
+
+    else
+        return totalLeafNodes(root->left) +
+               totalLeafNodes(root->right);
+}
+
+// Count Non-Leaf Nodes
+int totalNonLeafNodes(struct node *root)
+{
+    if (root == NULL)
+        return 0;
+
+    else if (root->left != NULL || root->right != NULL)
+        return 1 + totalNonLeafNodes(root->left) +
+               totalNonLeafNodes(root->right);
+
+    else
+        return 0;
+}
